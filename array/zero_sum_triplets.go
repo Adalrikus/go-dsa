@@ -4,34 +4,33 @@ import "sort"
 
 // ZeroSumTriplets solves the problem in O(n^2) time and O(1) space.
 func ZeroSumTriplets(list []int) [][]int {
-	output := make([][]int, 0)
+	result := make([][]int, 0)
 	if len(list) < 3 {
-		return output
+		return result
 	}
-
 	sort.Ints(list)
-	for i, n := range list {
-		if i > 0 && n == list[i-1] {
+	n := len(list)
+	for i := 0; i < n; i++ {
+		if i > 0 && list[i] == list[i-1] {
 			continue
 		}
 
-		l, r := i+1, len(list)-1
-		for l < r {
-			threeSum := n + list[l] + list[r]
-			if threeSum > 0 {
-				r--
-				continue
-			}
-			if threeSum < 0 {
-				l++
-				continue
-			}
-			output = append(output, []int{n, list[l], list[r]})
-			l++
-			for list[l] == list[l-1] && l < r {
-				l++
+		start, end := i+1, n-1
+		for start < end {
+			triplets := list[i] + list[start] + list[end]
+			switch {
+			case triplets > 0:
+				end--
+			case triplets < 0:
+				start++
+			default:
+				result = append(result, []int{list[i], list[start], list[end]})
+				start++
+				for list[start] == list[start-1] && start < end {
+					start++
+				}
 			}
 		}
 	}
-	return output
+	return result
 }
